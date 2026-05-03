@@ -1,29 +1,39 @@
 public class QuantityMeasurementApp {
 
+    public static void demonstrateLengthConversion(double value, LengthUnit fromUnit, LengthUnit toUnit) {
+        double result = QuantityLength.convert(value, fromUnit, toUnit);
+        // Round to handle floating-point representation quirks for demonstration output
+        result = Math.round(result * 1000000.0) / 1000000.0;
+        System.out.println("Input: convert(" + value + ", " + fromUnit.name() + ", " + toUnit.name() + ") -> Output: " + result);
+    }
+
+    public static void demonstrateLengthConversion(QuantityLength quantity, LengthUnit toUnit) {
+        QuantityLength result = quantity.convertTo(toUnit);
+        System.out.println("Converted " + quantity + " to " + result);
+    }
+
+    public static void demonstrateLengthEquality(QuantityLength q1, QuantityLength q2) {
+        System.out.println("Input: " + q1 + " and " + q2);
+        System.out.println("Output: Equal (" + q1.equals(q2) + ")\n");
+    }
+
+    public static void demonstrateLengthComparison(double val1, LengthUnit unit1, double val2, LengthUnit unit2) {
+        QuantityLength q1 = new QuantityLength(val1, unit1);
+        QuantityLength q2 = new QuantityLength(val2, unit2);
+        demonstrateLengthEquality(q1, q2);
+    }
+
     public static void main(String[] args) {
-        QuantityLength yards = new QuantityLength(1.0, LengthUnit.YARDS);
-        QuantityLength feet = new QuantityLength(3.0, LengthUnit.FEET);
-        System.out.println("Input: " + yards + " and " + feet);
-        System.out.println("Output: Equal (" + yards.equals(feet) + ")\n");
+        System.out.println("--- UC5 Conversion Demonstrations ---");
+        demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCHES);
+        demonstrateLengthConversion(3.0, LengthUnit.YARDS, LengthUnit.FEET);
+        demonstrateLengthConversion(36.0, LengthUnit.INCHES, LengthUnit.YARDS);
+        demonstrateLengthConversion(1.0, LengthUnit.CENTIMETERS, LengthUnit.INCHES);
+        demonstrateLengthConversion(0.0, LengthUnit.FEET, LengthUnit.INCHES);
 
-        QuantityLength yards2 = new QuantityLength(1.0, LengthUnit.YARDS);
-        QuantityLength inches = new QuantityLength(36.0, LengthUnit.INCHES);
-        System.out.println("Input: " + yards2 + " and " + inches);
-        System.out.println("Output: Equal (" + yards2.equals(inches) + ")\n");
-
-        QuantityLength yards3 = new QuantityLength(2.0, LengthUnit.YARDS);
-        QuantityLength yards4 = new QuantityLength(2.0, LengthUnit.YARDS);
-        System.out.println("Input: " + yards3 + " and " + yards4);
-        System.out.println("Output: Equal (" + yards3.equals(yards4) + ")\n");
-
-        QuantityLength cm1 = new QuantityLength(2.0, LengthUnit.CENTIMETERS);
-        QuantityLength cm2 = new QuantityLength(2.0, LengthUnit.CENTIMETERS);
-        System.out.println("Input: " + cm1 + " and " + cm2);
-        System.out.println("Output: Equal (" + cm1.equals(cm2) + ")\n");
-
-        QuantityLength cm3 = new QuantityLength(1.0, LengthUnit.CENTIMETERS);
-        QuantityLength inch3 = new QuantityLength(0.393701, LengthUnit.INCHES);
-        System.out.println("Input: " + cm3 + " and " + inch3);
-        System.out.println("Output: Equal (" + cm3.equals(inch3) + ")");
+        System.out.println("\n--- Equality Demonstrations ---");
+        demonstrateLengthComparison(1.0, LengthUnit.YARDS, 3.0, LengthUnit.FEET);
+        demonstrateLengthComparison(1.0, LengthUnit.YARDS, 36.0, LengthUnit.INCHES);
+        demonstrateLengthComparison(1.0, LengthUnit.CENTIMETERS, 0.393701, LengthUnit.INCHES);
     }
 }

@@ -192,4 +192,71 @@ public class QuantityMeasurementAppTest {
         assertTrue(feet.equals(inches), "6.0 feet should equal 72.0 inches");
         assertTrue(yards.equals(inches), "2.0 yards should equal 72.0 inches");
     }
+
+    @Test
+    public void testConversion_FeetToInches() {
+        assertEquals(12.0, QuantityLength.convert(1.0, LengthUnit.FEET, LengthUnit.INCHES), 1e-6);
+    }
+
+    @Test
+    public void testConversion_InchesToFeet() {
+        assertEquals(2.0, QuantityLength.convert(24.0, LengthUnit.INCHES, LengthUnit.FEET), 1e-6);
+    }
+
+    @Test
+    public void testConversion_YardsToInches() {
+        assertEquals(36.0, QuantityLength.convert(1.0, LengthUnit.YARDS, LengthUnit.INCHES), 1e-6);
+    }
+
+    @Test
+    public void testConversion_InchesToYards() {
+        assertEquals(2.0, QuantityLength.convert(72.0, LengthUnit.INCHES, LengthUnit.YARDS), 1e-6);
+    }
+
+    @Test
+    public void testConversion_CentimetersToInches() {
+        assertEquals(0.393701, QuantityLength.convert(1.0, LengthUnit.CENTIMETERS, LengthUnit.INCHES), 1e-6);
+    }
+
+    @Test
+    public void testConversion_FeetToYards() {
+        assertEquals(2.0, QuantityLength.convert(6.0, LengthUnit.FEET, LengthUnit.YARDS), 1e-6);
+    }
+
+    @Test
+    public void testConversion_RoundTrip_PreservesValue() {
+        double originalValue = 5.5;
+        double convertedToInches = QuantityLength.convert(originalValue, LengthUnit.FEET, LengthUnit.INCHES);
+        double convertedBackToFeet = QuantityLength.convert(convertedToInches, LengthUnit.INCHES, LengthUnit.FEET);
+        assertEquals(originalValue, convertedBackToFeet, 1e-6);
+    }
+
+    @Test
+    public void testConversion_ZeroValue() {
+        assertEquals(0.0, QuantityLength.convert(0.0, LengthUnit.FEET, LengthUnit.INCHES), 1e-6);
+    }
+
+    @Test
+    public void testConversion_NegativeValue() {
+        assertEquals(-12.0, QuantityLength.convert(-1.0, LengthUnit.FEET, LengthUnit.INCHES), 1e-6);
+    }
+
+    @Test
+    public void testConversion_InvalidUnit_Throws() {
+        assertThrows(IllegalArgumentException.class, () -> QuantityLength.convert(1.0, null, LengthUnit.INCHES));
+        assertThrows(IllegalArgumentException.class, () -> QuantityLength.convert(1.0, LengthUnit.FEET, null));
+    }
+
+    @Test
+    public void testConversion_NaNOrInfinite_Throws() {
+        assertThrows(IllegalArgumentException.class, () -> QuantityLength.convert(Double.NaN, LengthUnit.FEET, LengthUnit.INCHES));
+        assertThrows(IllegalArgumentException.class, () -> QuantityLength.convert(Double.POSITIVE_INFINITY, LengthUnit.FEET, LengthUnit.INCHES));
+    }
+
+    @Test
+    public void testConversion_PrecisionTolerance() {
+        // Checking epsilon tolerance behavior via math comparison
+        double result = QuantityLength.convert(1.0, LengthUnit.CENTIMETERS, LengthUnit.INCHES);
+        assertTrue(Math.abs(result - 0.393701) < 1e-6);
+    }
 }
