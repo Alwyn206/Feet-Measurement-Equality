@@ -28,6 +28,6 @@ public class QuantityLength {
 
     @Override
     public String toString() {
-        return "Quantity(" + value + ", \"" + unit.name().toLowerCase() + "\")";
+        return "Quantity(" + value + ", " + unit.name() + ")";
     }
 }
