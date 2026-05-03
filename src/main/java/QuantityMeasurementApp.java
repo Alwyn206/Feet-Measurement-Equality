@@ -23,6 +23,14 @@ public class QuantityMeasurementApp {
         demonstrateLengthEquality(q1, q2);
     }
 
+    public static void demonstrateAddition(double val1, LengthUnit unit1, double val2, LengthUnit unit2) {
+        QuantityLength q1 = new QuantityLength(val1, unit1);
+        QuantityLength q2 = new QuantityLength(val2, unit2);
+        QuantityLength result = q1.add(q2);
+        System.out.println("Input: add(" + q1 + ", " + q2 + ")");
+        System.out.println("Output: " + result + "\n");
+    }
+
     public static void main(String[] args) {
         System.out.println("--- UC5 Conversion Demonstrations ---");
         demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCHES);
@@ -35,5 +43,15 @@ public class QuantityMeasurementApp {
         demonstrateLengthComparison(1.0, LengthUnit.YARDS, 3.0, LengthUnit.FEET);
         demonstrateLengthComparison(1.0, LengthUnit.YARDS, 36.0, LengthUnit.INCHES);
         demonstrateLengthComparison(1.0, LengthUnit.CENTIMETERS, 0.393701, LengthUnit.INCHES);
+
+        System.out.println("\n--- UC6 Addition Demonstrations ---");
+        demonstrateAddition(1.0, LengthUnit.FEET, 2.0, LengthUnit.FEET);
+        demonstrateAddition(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCHES);
+        demonstrateAddition(12.0, LengthUnit.INCHES, 1.0, LengthUnit.FEET);
+        demonstrateAddition(1.0, LengthUnit.YARDS, 3.0, LengthUnit.FEET);
+        demonstrateAddition(36.0, LengthUnit.INCHES, 1.0, LengthUnit.YARDS);
+        demonstrateAddition(2.54, LengthUnit.CENTIMETERS, 1.0, LengthUnit.INCHES);
+        demonstrateAddition(5.0, LengthUnit.FEET, 0.0, LengthUnit.INCHES);
+        demonstrateAddition(5.0, LengthUnit.FEET, -2.0, LengthUnit.FEET);
     }
 }

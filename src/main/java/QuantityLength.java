@@ -60,6 +60,43 @@ public class QuantityLength {
         return new QuantityLength(convertedValue, targetUnit);
     }
 
+    /**
+     * Adds another QuantityLength to this one and returns the result in this object's unit.
+     *
+     * @param other the other QuantityLength to add
+     * @return a new QuantityLength representing the sum
+     */
+    public QuantityLength add(QuantityLength other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Cannot add a null quantity");
+        }
+        double convertedValue = other.convertTo(this.unit).value;
+        return new QuantityLength(this.value + convertedValue, this.unit);
+    }
+
+    /**
+     * Statically adds two quantities and returns the result in a specified target unit.
+     * 
+     * @param q1 the first quantity
+     * @param q2 the second quantity
+     * @param targetUnit the target unit for the result
+     * @return a new QuantityLength representing the sum
+     */
+    public static QuantityLength add(QuantityLength q1, QuantityLength q2, LengthUnit targetUnit) {
+        if (q1 == null || q2 == null || targetUnit == null) {
+            throw new IllegalArgumentException("Operands and target unit cannot be null");
+        }
+        double sum = q1.convertTo(targetUnit).value + q2.convertTo(targetUnit).value;
+        return new QuantityLength(sum, targetUnit);
+    }
+
+    /**
+     * Statically adds two quantities defined by their values and units, returning the result in a target unit.
+     */
+    public static QuantityLength add(double val1, LengthUnit unit1, double val2, LengthUnit unit2, LengthUnit targetUnit) {
+        return add(new QuantityLength(val1, unit1), new QuantityLength(val2, unit2), targetUnit);
+    }
+
     @Override
     public String toString() {
         return "Quantity(" + value + ", " + unit.name() + ")";
