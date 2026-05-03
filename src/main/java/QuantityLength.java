@@ -26,6 +26,40 @@ public class QuantityLength {
         return Double.compare(thisBaseValue, thatBaseValue) == 0;
     }
 
+    /**
+     * Converts a numeric value from a source unit to a target unit.
+     *
+     * @param value the numeric value to convert
+     * @param sourceUnit the unit of the input value
+     * @param targetUnit the unit to convert to
+     * @return the converted numeric value
+     * @throws IllegalArgumentException if units are null or value is not finite
+     */
+    public static double convert(double value, LengthUnit sourceUnit, LengthUnit targetUnit) {
+        if (sourceUnit == null || targetUnit == null) {
+            throw new IllegalArgumentException("Units cannot be null");
+        }
+        if (!Double.isFinite(value)) {
+            throw new IllegalArgumentException("Value must be a finite number");
+        }
+        double baseValue = value * sourceUnit.getBaseUnitConversionFactor();
+        return baseValue / targetUnit.getBaseUnitConversionFactor();
+    }
+
+    /**
+     * Converts this quantity to a new quantity with the target unit.
+     *
+     * @param targetUnit the unit to convert to
+     * @return a new QuantityLength instance representing the converted value
+     */
+    public QuantityLength convertTo(LengthUnit targetUnit) {
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target unit cannot be null");
+        }
+        double convertedValue = convert(this.value, this.unit, targetUnit);
+        return new QuantityLength(convertedValue, targetUnit);
+    }
+
     @Override
     public String toString() {
         return "Quantity(" + value + ", " + unit.name() + ")";
