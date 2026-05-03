@@ -440,4 +440,118 @@ public class QuantityMeasurementAppTest {
         double cmValue = QuantityLength.convert(2.0, LengthUnit.FEET, LengthUnit.CENTIMETERS);
         assertTrue(new QuantityLength(cmValue, LengthUnit.CENTIMETERS).equals(result));
     }
+
+    @Test
+    public void testLengthUnitEnum_FeetConstant() {
+        assertEquals(1.0, LengthUnit.FEET.getConversionFactor(), 1e-6);
+    }
+
+    @Test
+    public void testLengthUnitEnum_InchesConstant() {
+        assertEquals(1.0 / 12.0, LengthUnit.INCHES.getConversionFactor(), 1e-6);
+    }
+
+    @Test
+    public void testLengthUnitEnum_YardsConstant() {
+        assertEquals(3.0, LengthUnit.YARDS.getConversionFactor(), 1e-6);
+    }
+
+    @Test
+    public void testLengthUnitEnum_CentimetersConstant() {
+        assertEquals(0.393701 / 12.0, LengthUnit.CENTIMETERS.getConversionFactor(), 1e-6);
+    }
+
+    @Test
+    public void testConvertToBaseUnit_FeetToFeet() {
+        assertEquals(5.0, LengthUnit.FEET.convertToBaseUnit(5.0), 1e-6);
+    }
+
+    @Test
+    public void testConvertToBaseUnit_InchesToFeet() {
+        assertEquals(1.0, LengthUnit.INCHES.convertToBaseUnit(12.0), 1e-6);
+    }
+
+    @Test
+    public void testConvertToBaseUnit_YardsToFeet() {
+        assertEquals(3.0, LengthUnit.YARDS.convertToBaseUnit(1.0), 1e-6);
+    }
+
+    @Test
+    public void testConvertToBaseUnit_CentimetersToFeet() {
+        assertEquals(1.0, LengthUnit.CENTIMETERS.convertToBaseUnit(30.48), 1e-2);
+    }
+
+    @Test
+    public void testConvertFromBaseUnit_FeetToFeet() {
+        assertEquals(2.0, LengthUnit.FEET.convertFromBaseUnit(2.0), 1e-6);
+    }
+
+    @Test
+    public void testConvertFromBaseUnit_FeetToInches() {
+        assertEquals(12.0, LengthUnit.INCHES.convertFromBaseUnit(1.0), 1e-6);
+    }
+
+    @Test
+    public void testConvertFromBaseUnit_FeetToYards() {
+        assertEquals(1.0, LengthUnit.YARDS.convertFromBaseUnit(3.0), 1e-6);
+    }
+
+    @Test
+    public void testConvertFromBaseUnit_FeetToCentimeters() {
+        assertEquals(30.48, LengthUnit.CENTIMETERS.convertFromBaseUnit(1.0), 1e-2);
+    }
+
+    @Test
+    public void testQuantityLengthRefactored_Equality() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCHES);
+        assertTrue(q1.equals(q2));
+    }
+
+    @Test
+    public void testQuantityLengthRefactored_ConvertTo() {
+        QuantityLength q = new QuantityLength(1.0, LengthUnit.FEET);
+        assertTrue(new QuantityLength(12.0, LengthUnit.INCHES).equals(q.convertTo(LengthUnit.INCHES)));
+    }
+
+    @Test
+    public void testQuantityLengthRefactored_Add() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCHES);
+        assertTrue(new QuantityLength(2.0, LengthUnit.FEET).equals(q1.add(q2)));
+    }
+
+    @Test
+    public void testQuantityLengthRefactored_AddWithTargetUnit() {
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCHES);
+        assertTrue(new QuantityLength(0.666667, LengthUnit.YARDS).equals(QuantityLength.add(q1, q2, LengthUnit.YARDS)));
+    }
+
+    @Test
+    public void testQuantityLengthRefactored_NullUnit() {
+        assertThrows(IllegalArgumentException.class, () -> new QuantityLength(1.0, null));
+    }
+
+    @Test
+    public void testQuantityLengthRefactored_InvalidValue() {
+        assertThrows(IllegalArgumentException.class, () -> QuantityLength.convert(Double.NaN, LengthUnit.FEET, LengthUnit.INCHES));
+    }
+
+    @Test
+    public void testRoundTripConversion_RefactoredDesign() {
+        double originalValue = 5.0;
+        double feetToInches = LengthUnit.FEET.convertToBaseUnit(originalValue);
+        double inchesToFeet = LengthUnit.INCHES.convertFromBaseUnit(feetToInches);
+        double roundTrip = LengthUnit.INCHES.convertToBaseUnit(inchesToFeet);
+        double backToOriginal = LengthUnit.FEET.convertFromBaseUnit(roundTrip);
+        assertEquals(originalValue, backToOriginal, 1e-6);
+    }
+
+    @Test
+    public void testUnitImmutability() {
+        double factor1 = LengthUnit.FEET.getConversionFactor();
+        double factor2 = LengthUnit.FEET.getConversionFactor();
+        assertEquals(factor1, factor2, 1e-6);
+    }
 }

@@ -16,8 +16,8 @@ public class QuantityLength {
         if (obj == null || getClass() != obj.getClass()) return false;
         QuantityLength that = (QuantityLength) obj;
         
-        double thisBaseValue = this.value * this.unit.getBaseUnitConversionFactor();
-        double thatBaseValue = that.value * that.unit.getBaseUnitConversionFactor();
+        double thisBaseValue = this.unit.convertToBaseUnit(this.value);
+        double thatBaseValue = that.unit.convertToBaseUnit(that.value);
         
         // Use Math.round to handle double precision issues gracefully
         thisBaseValue = Math.round(thisBaseValue * 10000.0) / 10000.0;
@@ -42,8 +42,8 @@ public class QuantityLength {
         if (!Double.isFinite(value)) {
             throw new IllegalArgumentException("Value must be a finite number");
         }
-        double baseValue = value * sourceUnit.getBaseUnitConversionFactor();
-        return baseValue / targetUnit.getBaseUnitConversionFactor();
+        double baseValue = sourceUnit.convertToBaseUnit(value);
+        return targetUnit.convertFromBaseUnit(baseValue);
     }
 
     /**
@@ -67,10 +67,10 @@ public class QuantityLength {
         if (other == null || targetUnit == null) {
             throw new IllegalArgumentException("Operand and target unit cannot be null");
         }
-        double thisBase = this.value * this.unit.getBaseUnitConversionFactor();
-        double otherBase = other.value * other.unit.getBaseUnitConversionFactor();
+        double thisBase = this.unit.convertToBaseUnit(this.value);
+        double otherBase = other.unit.convertToBaseUnit(other.value);
         double sumBase = thisBase + otherBase;
-        double resultValue = sumBase / targetUnit.getBaseUnitConversionFactor();
+        double resultValue = targetUnit.convertFromBaseUnit(sumBase);
         return new QuantityLength(resultValue, targetUnit);
     }
 
