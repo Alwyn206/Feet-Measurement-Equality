@@ -61,33 +61,34 @@ public class QuantityLength {
     }
 
     /**
+     * Private utility method for addition conversion on base unit value.
+     */
+    private QuantityLength addInternal(QuantityLength other, LengthUnit targetUnit) {
+        if (other == null || targetUnit == null) {
+            throw new IllegalArgumentException("Operand and target unit cannot be null");
+        }
+        double thisBase = this.value * this.unit.getBaseUnitConversionFactor();
+        double otherBase = other.value * other.unit.getBaseUnitConversionFactor();
+        double sumBase = thisBase + otherBase;
+        double resultValue = sumBase / targetUnit.getBaseUnitConversionFactor();
+        return new QuantityLength(resultValue, targetUnit);
+    }
+
+    /**
      * Adds another QuantityLength to this one and returns the result in this object's unit.
-     *
-     * @param other the other QuantityLength to add
-     * @return a new QuantityLength representing the sum
      */
     public QuantityLength add(QuantityLength other) {
-        if (other == null) {
-            throw new IllegalArgumentException("Cannot add a null quantity");
-        }
-        double convertedValue = other.convertTo(this.unit).value;
-        return new QuantityLength(this.value + convertedValue, this.unit);
+        return addInternal(other, this.unit);
     }
 
     /**
      * Statically adds two quantities and returns the result in a specified target unit.
-     * 
-     * @param q1 the first quantity
-     * @param q2 the second quantity
-     * @param targetUnit the target unit for the result
-     * @return a new QuantityLength representing the sum
      */
     public static QuantityLength add(QuantityLength q1, QuantityLength q2, LengthUnit targetUnit) {
-        if (q1 == null || q2 == null || targetUnit == null) {
-            throw new IllegalArgumentException("Operands and target unit cannot be null");
+        if (q1 == null) {
+            throw new IllegalArgumentException("First operand cannot be null");
         }
-        double sum = q1.convertTo(targetUnit).value + q2.convertTo(targetUnit).value;
-        return new QuantityLength(sum, targetUnit);
+        return q1.addInternal(q2, targetUnit);
     }
 
     /**
